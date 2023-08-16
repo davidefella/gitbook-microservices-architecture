@@ -1,6 +1,10 @@
 # Architettura a microservizi in soccorso
 
-_Ma cosa sono esattamente i microservizi?_ Purtroppo, il nome non aiuta poiché mette troppo l'accento sulla dimensione. Esistono numerose definizioni dell'architettura a microservizi. Alcune interpretazioni prendono il nome troppo letteralmente e sostengono che un servizio dovrebbe essere minuscolo, ad esempio 100 linee di codice. Altre affermano che un servizio dovrebbe richiedere solo due settimane di sviluppo e c'è chi definisce l'architettura a microservizi come un'architettura orientata ai servizi composta da elementi debolmente accoppiati con contesti delimitati. Questa non è una cattiva definizione, ma risulta un po' generica
+### SLIDE 1
+
+Ma cosa sono esattamente i microservizi? Purtroppo, il nome non aiuta perché si mette troppo l'accento sulla dimensione e non sulle funzionalità. Esistono numerose definizioni dell'architettura a microservizi.&#x20;
+
+Alcune interpretazioni prendono il nome troppo letteralmente e sostengono che un servizio dovrebbe essere minuscolo, ad esempio 100 linee di codice. Altre affermano che un servizio dovrebbe richiedere solo due settimane di sviluppo e c'è chi definisce _l'architettura a microservizi come un'architettura orientata ai servizi composta da elementi debolmente accoppiati con contesti delimitati._ Quest'ultima non è una cattiva definizione, ma risulta un po' generica
 
 ### Scale cube e microservizi
 
