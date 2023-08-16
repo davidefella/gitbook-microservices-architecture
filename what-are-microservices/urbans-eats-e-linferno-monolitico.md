@@ -53,7 +53,15 @@ Quindi il ciclo di _modifica-compilazione-esecuzione-test_ richiede molto tempo,
 
 Dall'avvio dei primi anni duemila UrbanEats ha registrato una crescita esplosiva diventando una delle principali aziende di consegna di cibo online negli Stati Uniti pianificando di espandersi all'estero, anche se questi piani sono diventano difficile a causa dei ritardi nell'implementazione delle funzionalità necessarie.&#x20;
 
-Come molte altre applicazioni aziendali invecchiate nel corso degli anni, è diventata un'applicazione grande e complessa diventando un esempio del pattern Big Ball of Mud cioè una "struttura caotica, estesa, disordinata, fatta di nastro adesivo e filo di ferro, un groviglio di codice spaghetti." Il ritmo di consegna del software si è rallentato. Per complicare ulteriormente le cose, l'applicazione di UrbanEats è stata sviluppata utilizzando alcuni framework sempre più obsoleti. L'applicazione di UrbanEats sta manifestando tutti i sintomi dell'inferno monolitico.
+Come molte altre applicazioni aziendali invecchiate nel corso degli anni, è diventata un'applicazione grande e complessa diventando un esempio del pattern Big Ball of Mud cioè una "struttura caotica, estesa, disordinata, fatta di nastro adesivo e filo di ferro, un groviglio di codice spaghetti." Il ritmo di consegna del software si è rallentato. Per complicare ulteriormente le cose, l'applicazione di UrbanEats è stata sviluppata utilizzando alcuni framework sempre più obsoleti.
+
+Lisa e il managmente hanno concluso che UrbanEats deve migrare all'architettura a microservizi perché l'applicazione di UrbanEats sta manifestando tutti i sintomi dell'inferno monolitico.&#x20;
+
+In realtà, è comune che applicazioni di successo si presentino come grandi ammassi disorganizzati l'architettura però è importante a causa del suo impatto sui vari requisiti di qualità del servizio, chiamati anche **requisiti non funzionali**
+
+Da una parte, un team organizzato e addestrato può rallentare la velocità della discesa verso questo **inferno monolitico** ma non possono evitare i problemi legati a un grande team che lavora su un'unica applicazione monolitica.&#x20;
+
+Man mano che l'applicazione di UrbanEats è cresciuta, vari attributi di qualità hanno risentito di problemi, soprattutto quelli che influiscono sulla velocità di rilascio del software: manutenibilità, estensibilità e testabilità.&#x20;
 
 Vediamo quelli che sono i problemi di questa applicazione
 
