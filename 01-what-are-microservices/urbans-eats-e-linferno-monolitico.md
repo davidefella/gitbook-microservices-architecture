@@ -1,6 +1,6 @@
 # Urbans Eats e l'inferno monolitico
 
-### SLIDE 1
+### SLIDE 01-01
 
 Questa nostra storia inizia con Lisa, la CTO di UrbanEats, Inc. (UEI) e del suo senso di frustrazione di un lunedì mattina come tanti. Aveva trascorso la settimana precedente seguendo una bellissima conferenza, apprendendo le ultime tecniche e tecnologie per lo sviluppo software come la Continous Delivery e l'architettura a Microservizi. La conferenza l'aveva lasciata con un senso di ottimismo e fiducia con il desiderio di migliorare il modo in cui la sua azienda sviluppa il software.
 
@@ -22,7 +22,7 @@ Nonostante abbia un'architettura logicamente modulare, l'applicazione di UrbanEa
 
 L'architettura monolitica non è _intrinsecamente negativa_, è stata una decisione che era valida quando hanno scelto l'architettura monolitica per la loro applicazione.
 
-### SLIDE 2
+### SLIDE 01-02
 
 Nei primi mesi di sviluppo della nostro applicazione l'architettura monolitica dell'applicazione aveva molti vantaggi:
 
@@ -37,7 +37,7 @@ Purtroppo questo tipo di architettura presenta diversi limitazioni:
 
 Ad ogni sprint, il team di sviluppo di implementava features in più il che rendeva la base di codice più ampia. Inoltre, man mano che l'azienda diventava sempre più grande, la dimensione del team di sviluppo cresceva costantemente. Ciò non solo aumentava il tasso di crescita della base di codice, ma aumentava anche l'onere della gestione.
 
-### SLIDE 3
+### SLIDE 01-03
 
 <figure><img src="../.gitbook/assets/Screenshot 2023-08-11 alle 21.18.41.png" alt=""><figcaption></figcaption></figure>
 
@@ -49,7 +49,7 @@ Oltre a dover affrontare una complessità schiacciante, gli sviluppatori di Urba
 
 Quindi il ciclo di _modifica-compilazione-esecuzione-test_ richiede molto tempo, il che incide negativamente sulla produttività.
 
-### **SLIDE 4**
+### SLIDE 01-04
 
 Dall'avvio dei primi anni duemila UrbanEats ha registrato una crescita esplosiva diventando una delle principali aziende di consegna di cibo online negli Stati Uniti pianificando di espandersi all'estero, anche se questi piani sono diventano difficile a causa dei ritardi nell'implementazione delle funzionalità necessarie.&#x20;
 
@@ -65,7 +65,7 @@ Man mano che l'applicazione di UrbanEats è cresciuta, vari attributi di qualit�
 
 Vediamo quelli che sono i problemi di questa applicazione
 
-### **SLIDE 5**
+### SLIDE 01-05
 
 Uno dei problemi più importanti dell'applicazione è che implementare le modifiche in produzione è un processo complesso, il team di solito effettua il deployment degli aggiornamenti in produzione una volta al mese e molto spesso di solito a tarda notte del venerdì o del sabato chiaramente per non interrompere il servizio dell'applicativo. &#x20;
 
@@ -90,8 +90,4 @@ Questa architettura costringe il team a utilizzare una pila tecnologica che dive
 Il team di sviluppo non ha mai trovato le risorse per effettuare l'aggiornamento dei vari framework come Spring. Di conseguenza, parti importanti dell'applicazione sono state scritte utilizzando framework sempre più datati.&#x20;
 
 Inoltre, agli sviluppatori di UrbanEats piacerebbe sperimentare con linguaggi non basati su Java come GoLang e NodeJS. Purtroppo, ciò non è possibile con un'applicazione monolitica.
-
-###
-
-
 
