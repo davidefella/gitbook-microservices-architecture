@@ -31,4 +31,10 @@ L'adozione dell'architettura a microservizi cambia la tua architettura, la tua o
 
 Il libro descrive come gestire al meglio ogni fase della transizione e aumentare la probabilità di implementare con successo il cambiamento. UrbanEats sta sicuramente soffrendo dell'inferno monolitico e ha bisogno di migrare verso un'architettura a microservizi. Deve anche cambiare la propria organizzazione e i processi di sviluppo. Tuttavia, affinché UrbanEats possa realizzare con successo questo obiettivo, deve tenere conto del modello di transizione e considerare le emozioni delle persone. Nel prossimo capitolo, imparerai l'obiettivo dell'architettura del software e come decomporre un'applicazione in servizi.
 
+
+
+
+
+Riassunto:  Il pattern di architettura monolitica struttura l'applicazione come un'unica unità deployabile.  Il pattern di architettura a microservizi decompone un sistema in un insieme di servizi indipendentemente deployabili, ognuno con il proprio database.  L'architettura monolitica è una buona scelta per le applicazioni semplici, ma l'architettura a microservizi è solitamente una scelta migliore per le applicazioni grandi e complesse.  L'architettura a microservizi accelera la velocità dello sviluppo del software consentendo a piccoli team autonomi di lavorare in parallelo.  L'architettura a microservizi non è una soluzione miracolosa: ha notevoli svantaggi, tra cui la complessità.  Il linguaggio dei pattern dell'architettura a microservizi è una collezione di modelli che ti aiutano a progettare un'applicazione utilizzando l'architettura a microservizi. Ti aiuta a decidere se utilizzare l'architettura a microservizi e, se scegli questa architettura, il linguaggio dei pattern ti aiuta a implementarla in modo efficace.  Hai bisogno di più di semplicemente l'architettura a microservizi per accelerare la distribuzione del software. Lo sviluppo di software di successo richiede anche DevOps e team piccoli e autonomi.  Non dimenticare il lato umano nell'adozione dei microservizi. Devi considerare le emozioni dei dipendenti per effettuare con successo la transizione verso un'architettura a microservizi.
+
 \
