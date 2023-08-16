@@ -14,7 +14,7 @@ Esaminiamo i problemi che UEI sta affrontando e come ci sono arrivati.
 
 UrbanEats è un'applicazione Java aziendale tipica, in figura vediamo la sua possibile architettura. L'applicazione di UrbanEats presenta un'architettura esagonale, uno pattern architetturale che vedremo in dettaglio più avanti. In un'architettura esagonale, il nucleo dell'applicazione è costituito dalla logica di business. Attorno alla logica di business ci sono vari adattatori che implementano interfacce utente e si integrano con sistemi esterni.
 
-<figure><img src="../.gitbook/assets/Screenshot 2023-08-11 alle 21.09.45.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/Screenshot 2023-08-11 alle 21.09.45.png" alt=""><figcaption></figcaption></figure>
 
 La logica di business è composta da moduli, ognuno dei quali è una raccolta di oggetti di dominio. Esempi di moduli includono la Gestione degli Ordini, la Gestione delle Consegne, la Fatturazione e i Pagamenti. Ci sono diversi adapter che interagiscono con i sistemi esterni. Alcuni sono adattatori in ingresso, che gestiscono le richieste invocando la logica di business, tra cui gli adattatori API REST e UI Web. Altri sono adattatori in uscita, che consentono alla logica di business di accedere al database MySQL e di invocare servizi cloud come Twilio e Paypal.
 
@@ -43,7 +43,7 @@ Come illustrato in figura, quella che un tempo era un'applicazione UrbanEats pic
 
 A causa di una crescita che ha superato la sua architettura, UrbanEats si trova ora in un **"inferno monolitico".** Lo sviluppo è lento e doloroso. Lo sviluppo e il rilascio agili sono diventati impossibili. Vediamo perché ciò è avvenuto.
 
-<figure><img src="../.gitbook/assets/Screenshot 2023-08-11 alle 21.18.41.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/Screenshot 2023-08-11 alle 21.18.41.png" alt=""><figcaption></figcaption></figure>
 
 Per complicare ulteriormente la situazione, questa complessità travolgente tende a essere una spirale discendente. Se la base di codice è difficile da comprendere, uno sviluppatore non apporterà correttamente le modifiche. Ogni modifica rende la base di codice incrementalmente più complessa e difficile da capire. L'architettura pulita e modulare mostrata in precedenza non rispecchia la realtà. L'azienda sta gradualmente diventando un mostruoso groviglio incomprensibile di codice.&#x20;
 
