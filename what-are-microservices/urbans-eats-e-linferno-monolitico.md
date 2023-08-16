@@ -1,4 +1,4 @@
-# Escaping Monolithic Hell
+# Urbans Eats e l'inferno monolitico
 
 ### SLIDE 1
 
@@ -10,13 +10,11 @@ Nonostante l'adozione delle pratiche agili il ritmo di sviluppo stava rallentand
 
 La conferenza aveva fatto comprendere a Lisa che la UrbanEats stava affrontando una sorta di "inferno monolitico" e che una possibile soluzione sarebbe stata quella di adottare l'architettura a microservizi che però al suo stato attuale sembravano un obiettivo impossibile da raggiungere.&#x20;
 
-### La nostra architettura
-
-UrbanEats è una tipica applicazione Java enterprise e di base è abbastanza semplice: i consumatori utilizzano il sito web o l'applicazione mobile di UrbanEats per effettuare ordini presso i vari ristoranti. UrbanEats coordina una rete di corrieri che consegnano gli ordini. È anche responsabile del pagamento dei corrieri e dei ristoranti. I ristoranti utilizzano il sito web di UrbanEats per modificare i loro menu e gestire gli ordini. L'applicazione utilizza vari servizi web, tra cui Stripe per i pagamenti, Twilio per i messaggi e Amazon Simple Email Service (SES) per le email.&#x20;
+Vediamo il nostro **studio di caso** ovvero, UrbanEats che è una tipica applicazione Java enterprise e di base è abbastanza semplice: i consumatori utilizzano il sito web o l'applicazione mobile di UrbanEats per effettuare ordini presso i vari ristoranti. UrbanEats coordina una rete di corrieri che consegnano gli ordini. È anche responsabile del pagamento dei corrieri e dei ristoranti. I ristoranti utilizzano il sito web di UrbanEats per modificare i loro menu e gestire gli ordini. L'applicazione utilizza vari servizi web, tra cui Stripe per i pagamenti, Twilio per i messaggi e Amazon Simple Email Service (SES) per le email.&#x20;
 
 Nel diagramma vediamo una sua possibile architettura e notiamo che presenta un'architettura esagonale che è un pattern architetturale. In questa architettura il nucleo dell'applicazione è costituito da quella che è la logica di business e attorno ci sono vari adapter che implementano interfacce utente che si integrano con sistemi esterni.
 
-<figure><img src=".gitbook/assets/Screenshot 2023-08-11 alle 21.09.45.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-11 alle 21.09.45.png" alt=""><figcaption></figcaption></figure>
 
 La logica di business è composta da moduli, ognuno dei quali è una raccolta di oggetti del dominio come la Gestione degli Ordini, la Gestione delle Consegne, la Fatturazione e i Pagamenti, abbiamo anche diversi adapter che interagiscono con i sistemi esterni, alcuni sono in ingresso, che gestiscono le richieste invocando i metodi della logica di business mentre altri sono adattatori in uscita, che consentono alla logica di business di accedere al database MySQL e di invocare servizi cloud come Twilio e Paypal.
 
@@ -25,8 +23,6 @@ Nonostante abbia un'architettura logicamente modulare, l'applicazione di UrbanEa
 L'architettura monolitica non è _intrinsecamente negativa_, è stata una decisione che era valida quando hanno scelto l'architettura monolitica per la loro applicazione.
 
 ### SLIDE 2
-
-### Benefici di un architettura monolitica
 
 Nei primi mesi di sviluppo della nostro applicazione l'architettura monolitica dell'applicazione aveva molti vantaggi:
 
@@ -43,7 +39,7 @@ Ad ogni sprint, il team di sviluppo di implementava features in più il che rend
 
 ### SLIDE 3
 
-<figure><img src=".gitbook/assets/Screenshot 2023-08-11 alle 21.18.41.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-11 alle 21.18.41.png" alt=""><figcaption></figcaption></figure>
 
 In questa figura vediamo che quella che un tempo era un'applicazione UrbanEats piccola e semplice si è ingrandita nel corso degli anni, trasformandosi in un monolite. Allo stesso modo, il piccolo team di sviluppo è ora diventato composto da diversi team ciascuno dei quali lavora su un'area funzionale specifica. A causa di una crescita che ha superato la sua architettura, UrbanEats si trova ora in un **"inferno monolitico"** che ha reso lo sviluppo del codice e i rilasci lenti e dolorosi
 
