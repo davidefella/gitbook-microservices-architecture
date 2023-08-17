@@ -1,4 +1,4 @@
-# 🙂 Takeway
+# 🤝 Takeway
 
 ## SLIDE 05-01
 
