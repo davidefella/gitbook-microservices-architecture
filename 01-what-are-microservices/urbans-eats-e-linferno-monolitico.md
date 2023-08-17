@@ -24,6 +24,16 @@ L'architettura monolitica non è _intrinsecamente negativa_, è stata una decisi
 
 ### SLIDE 01-02
 
+Ci sono diverse possibili definizioni di "monolite" e sono sicuro che tutti qui abbiamo una idea di cosa sia un applicativo monolite. Qui ci riferiamo ad un'unità di distribuzione e quando questa deve essere distribuita insieme, la possiamo considerare un monolite. Abbiamo diverse tipologie di monolite:&#x20;
+
+* **Monolite a singolo processo**: è un sistema in cui tutto il codice viene distribuito come un singolo processo, potremmo avere più istanze di questo processo per motivi di robustezza o scalabilità, ma fondamentalmente tutto il codice è racchiuso in un unico processo. La maggior parte dei sistemi che incontriamo è leggermente più complessa di così perché ad esempio potremmo avere due o più monoliti che sono strettamente accoppiati tra loro, potenzialmente con alcuni software di terze parti nel mix.
+* **Monolite modulare**: il monolite modulare è una variante in cui il singolo processo è composto da moduli separati che possono essere gestiti in modo indipendente, ma tutti devono ancora essere combinati insieme per il deployment. Per molte organizzazioni, il monolito modulare può essere una buona scelta di compromesso, se i confini dei moduli sono ben definiti può consentire un alto grado di lavoro parallelo, evitando le sfide dell'architettura a microservizi. Uno dei problemi è che il database tende a mancare della decomposizione che troviamo a livello di codice e questo ci porta a sfide importanti se si desidera separare il monolito in futuro
+* **Monolite distribuito**: "_Un sistema distribuito è un sistema in cui il fallimento di un computer che nemmeno sapevi esistesse può rendere il tuo computer inutilizzabile_". Un monolite distribuito è un sistema composto da diversi servizi ma che per qualche motivo devono essere distribuiti insieme. Questa architettura spesso si avvicina a quella della SOA (che vedremo più avanti). Un monolite distribuito ha tutti gli svantaggi di un sistema distribuito e gli svantaggi di un monolite a singolo processo, senza però avere abbastanza dei vantaggi di entrambi.
+
+### SLIDE 01-03
+
+Molte persone vedono l'architettura monolitica come qualcosa da evitare e di intrinsecamente problematico come se fosse sinonimo di obsolescenza. Un'architettura monolitica è una scelta e molto spesso una scelta valida e ragionevole come stile architetturale predefinito. In altre parole dobbiamo cercare una ragione convincente per utilizzare i microservizi, anziché cercare una ragione per non farlo.
+
 Nei primi mesi di sviluppo della nostro applicazione l'architettura monolitica dell'applicazione aveva molti vantaggi:
 
 * **Semplicità** di sviluppo: le risorse erano focalizzate sulla creazione di un'applicazione singola più lineare.
@@ -37,7 +47,7 @@ Purtroppo questo tipo di architettura presenta diversi limitazioni:
 
 Ad ogni sprint, il team di sviluppo di implementava features in più il che rendeva la base di codice più ampia. Inoltre, man mano che l'azienda diventava sempre più grande, la dimensione del team di sviluppo cresceva costantemente. Ciò non solo aumentava il tasso di crescita della base di codice, ma aumentava anche l'onere della gestione.
 
-### SLIDE 01-03
+### SLIDE 01-04
 
 <figure><img src="../.gitbook/assets/Screenshot 2023-08-11 alle 21.18.41.png" alt=""><figcaption></figcaption></figure>
 
@@ -49,7 +59,7 @@ Oltre a dover affrontare una complessità schiacciante, gli sviluppatori di Urba
 
 Quindi il ciclo di _modifica-compilazione-esecuzione-test_ richiede molto tempo, il che incide negativamente sulla produttività.
 
-### SLIDE 01-04
+### SLIDE 01-05
 
 Dall'avvio dei primi anni duemila UrbanEats ha registrato una crescita esplosiva diventando una delle principali aziende di consegna di cibo online negli Stati Uniti pianificando di espandersi all'estero, anche se questi piani sono diventano difficile a causa dei ritardi nell'implementazione delle funzionalità necessarie.&#x20;
 
@@ -65,7 +75,7 @@ Man mano che l'applicazione di UrbanEats è cresciuta, vari attributi di qualit�
 
 Vediamo quelli che sono i problemi di questa applicazione
 
-### SLIDE 01-05
+### SLIDE 01-06
 
 Uno dei problemi più importanti dell'applicazione è che implementare le modifiche in produzione è un processo complesso, il team di solito effettua il deployment degli aggiornamenti in produzione una volta al mese e molto spesso di solito a tarda notte del venerdì o del sabato chiaramente per non interrompere il servizio dell'applicativo. &#x20;
 
