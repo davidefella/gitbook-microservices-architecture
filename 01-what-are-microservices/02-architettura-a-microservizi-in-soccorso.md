@@ -1,4 +1,4 @@
-# Architettura a microservizi (in soccorso)
+# 02-Architettura a microservizi (in soccorso)
 
 ### SLIDE 02-01
 
@@ -50,7 +50,7 @@ Arriviamo quindi alla definizione di alto livello dell'architettura a microservi
 
 ### SLIDE 02-05
 
-La modularità è fondamentale nello sviluppo di applicazioni grandi e complesse come quella del nostro studio di caso. UrbanEats infatti di base è troppo grande per essere sviluppata da un singolo individuo ed è anche troppo complessa per essere compresa da una sola persona.&#x20;
+La **modularità** è fondamentale nello sviluppo di applicazioni grandi e complesse come quella del nostro studio di caso. UrbanEats infatti di base è troppo grande per essere sviluppata da un singolo individuo ed è anche troppo complessa per essere compresa da una sola persona.&#x20;
 
 Le applicazioni devono essere scomposte in moduli che sono sviluppati e compresi da persone diverse ma in un'applicazione monolitica i moduli vengono definiti utilizzando una combinazione di costrutti e artefatti del linguaggio di programmazione (come i pacchetti Java, JAR e WAR). Il problema è che come abbiamo già visto questo approccio tende a non funzionare bene nella pratica. Le applicazioni monolitiche a lunga durata tendono spesso a degenerare in grandi masse disordinate.
 

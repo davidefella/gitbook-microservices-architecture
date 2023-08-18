@@ -9,3 +9,8 @@
 * [🤯 02-Decomposition strategies](02-decomposition-strategies/README.md)
   * [02-01-Software Architectures](02-decomposition-strategies/02-01-software-architectures.md)
   * [02-02-Progettare una Architettura a MS](02-decomposition-strategies/02-02-progettare-una-architettura-a-ms.md)
+  * [02-03-Coupling types](02-decomposition-strategies/02-03-coupling-types.md)
+  * [🤝 02-04-Takeway](02-decomposition-strategies/02-04-takeway.md)
+* [🥸 03 - Interprocess communication](03-interprocess-communication/README.md)
+  * [03-01-Overview](03-interprocess-communication/03-01-overview.md)
+  * [03-02-SYNC-REMOTE-PROCEDURE](03-interprocess-communication/03-02-sync-remote-procedure.md)

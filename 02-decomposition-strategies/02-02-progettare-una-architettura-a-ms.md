@@ -227,6 +227,37 @@ Chiaramente l'applicazione deve mantenere la coerenza tra questi oggetti diversi
 
 ## SLIDE 02-02-15
 
-\
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-18 alle 09.58.11.png" alt=""><figcaption></figcaption></figure>
 
+Finora abbiamo analizzato una lista di operazioni di sistema e una lista di servizi potenziali, il passo successivo è definire l'API di ciascun servizio cioè capire le operazioni e gli eventi associati. Alcune operazioni corrispondono ad operazioni di sistema invocate da client esterni e forse da altri servizi. Le altre operazioni invece esistono per supportare la collaborazione tra i servizi e sono invocate solo da altri servizi.&#x20;
 
+Il punto di partenza per definire le API dei servizi è mappare ciascuna operazione di sistema su un servizio. Successivamente decidiamo se un servizio deve collaborare con gli altri per implementare un'operazione di sistema. Se è necessaria la collaborazione, determiniamo quindi quali API devono fornire gli altri servizi per supportare la collaborazione. Iniziamo vedendo come assegnare le operazioni di sistema ai servizi.
+
+Il primo passo è decidere quale servizio è il punto di ingresso iniziale per una richiesta, molte operazioni di sistema si mappano perfettamente su un servizio, ma talvolta la mappatura è meno ovvia. Considera, ad esempio, l'operazione _noteUpdatedLocation()_, che aggiorna la posizione del corriere. Da un lato, poiché è correlata ai corrieri, questa operazione dovrebbe essere assegnata al servizio di Corrieri. D'altra parte, è il Servizio di Consegna che ha bisogno della posizione del corriere. In tabella vediamo quali servizi nell'applicazione UberEats sono responsabili di quali operazioni. Dopo aver assegnato le operazioni ai servizi, il passo successivo è decidere come i servizi collaborano per gestire le varie operazione di sistema.
+
+## SLIDE 02-02-16
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-18 alle 10.02.50.png" alt=""><figcaption></figcaption></figure>
+
+In tabella vediamo la lista delle operazioni e notiamo che alcune di queste vengono gestite interamente da un singolo servizio. Ad esempio, nell'applicazione UrbanEats, il servizio _Consumer_ gestisce l'operazione _createConsumer()_ completamente da solo. Altre operazioni di sistema invece coinvolgono più servizi e i dati necessari per gestire una di queste richieste potrebbero essere distribuiti su più servizi.&#x20;
+
+Ad esempio, per implementare l'operazione _createOrder()_, il servizio Order deve invocare i seguenti servizi per verificare le sue precondizioni e rendere _vere_ le postcondizioni:
+
+* **Servizio Consumer**: verifica che il cliente possa effettuare un ordine e ottiene le informazioni di pagamento.
+* **Servizio Ristorante**: valida gli articoli dell'ordine, verifica che l'indirizzo/orario di consegna sia nell'area di servizio del ristorante, verifica che l'importo minimo dell'ordine sia raggiunto e ottiene i prezzi degli articoli dell'ordine.
+* **Servizio Cucina**: crea il Ticket (che sarebbe l'ordine da preparare) .
+* **Servizio Contabilità**: autorizza la carta di credito del cliente.&#x20;
+
+Allo stesso modo per implementare l'operazione _acceptOrder()_, il servizio Kitchen deve invocare il servizio Delivery per pianificare un corriere per la consegna dell'ordine. La Tabella nella slide mostra i servizi, le loro API riviste e i loro collaboratori. Per definire completamente le API dei servizi, è necessario analizzare ciascuna operazione di sistema e determinare quale tipo di collaborazione è richiesta.
+
+Finora abbiamo identificato i servizi e le operazioni che ciascun servizio implementa. Tuttavia, è importante ricordare che l'architettura che abbiamo delineato è ancora molto astratta perché non abbiamo scelto nessuna tecnologia, inoltre dobbiamo considerare per le varie "_operazioni_" se abbiamo meccanismi sincroni o asincroni.&#x20;
+
+## SLIDE 02-02-17
+
+Come abbiamo già accennato più volte, i concetti di **accoppiamento** e **coesione** sono ovviamente correlati perché se la funzionalità correlata è distribuita in tutto il nostro sistema, le modifiche a questa funzionalità si propagheranno attraverso il dominio e questo implica un accoppiamento più stretto. C'è una legge empirica chiamata "La legge di Constantine" che ci dice che "Una struttura è stabile se la coesione è forte e l'accoppiamento è basso."
+
+Il concetto di stabilità chiaramente qui è importante per noi per raggiungere l'obiettivo di deploy indipendenti, di lavorare in parallelo e ridurre il coordinamento tra i vari team. Se il contratto che un microservizio espone cambia costantemente in modo incompatibile con le versioni precedenti obblighiamo il cambiamento anche in altri punti del software
+
+La coesione si applica alla relazione tra le cose all'interno di un confine preciso (un microservizio nel nostro contesto), mentre l'accoppiamento descrive la relazione tra le cose attraverso un dominio. Non esiste un modo assolutamente migliore per organizzare il nostro codice; l'accoppiamento e la coesione sono solo un modo per esprimere i vari compromessi che facciamo su dove raggruppare il codice e perché. Tutto ciò a cui possiamo aspirare è trovare il giusto equilibrio tra queste due idee, un equilibrio che abbia più senso per il contesto specifico e per i problemi che stai affrontando attualmente.
+
+Inoltre ricordiamoci che il mondo non è statico: è possibile che, man mano che i requisiti del  sistema cambiano, si troveranno ragioni per riesaminare le decisioni. A volte alcune parti del tuo sistema potrebbero essere soggette a così tanti cambiamenti da rendere impossibile la stabilità.&#x20;
