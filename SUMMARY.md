@@ -8,4 +8,4 @@
   * [🤝 Takeway](01-what-are-microservices/takeway.md)
 * [🤯 02-Decomposition strategies](02-decomposition-strategies/README.md)
   * [02-01-Software Architectures](02-decomposition-strategies/02-01-software-architectures.md)
-  * [02-02-Come definire una Architettura a MS](02-decomposition-strategies/02-02-come-definire-una-architettura-a-ms.md)
+  * [02-02-Progettare una Architettura a MS](02-decomposition-strategies/02-02-progettare-una-architettura-a-ms.md)
