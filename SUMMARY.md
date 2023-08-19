@@ -13,4 +13,4 @@
   * [🤝 02-04-Takeway](02-decomposition-strategies/02-04-takeway.md)
 * [🥸 03 - Interprocess communication](03-interprocess-communication/README.md)
   * [03-01-Overview](03-interprocess-communication/03-01-overview.md)
-  * [03-02-SYNC-REMOTE-PROCEDURE](03-interprocess-communication/03-02-sync-remote-procedure.md)
+  * [03-02-Sync-Remote-Procedure](03-interprocess-communication/03-02-sync-remote-procedure.md)

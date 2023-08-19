@@ -110,14 +110,5 @@ Uno svantaggio dell'utilizzo di un formato di messaggio basato su testo è che i
 
 Una differenza tra questi due formati binari è che Protocol Buffers utilizza campi con tag, mentre un consumer Avro deve conoscere lo schema per interpretare i messaggi. Di conseguenza, la gestione dell'evoluzione dell'API è più facile con Protocol Buffers che con Avro.
 
-## SLIDE 03-01-05
 
 
-
-<figure><img src="../.gitbook/assets/Screenshot 2023-08-18 alle 18.07.01.png" alt=""><figcaption></figcaption></figure>
-
-Quando si utilizza un meccanismo di IPC basato su _invocazione remota_ (Remote Procedure Invocation, RPI), un client invia una richiesta a un servizio e il servizio elabora la richiesta e invia indietro una risposta. Alcuni client possono bloccarsi in attesa di una risposta, mentre altri potrebbero avere un'architettura reattiva e non bloccante.&#x20;
-
-Ma a differenza dell'utilizzo di messaggi, il client assume che la risposta arriverà tempestivamente. La logica di business nel client invoca un'interfaccia proxy, implementata da una classe Adapter. Il proxy RPI effettua una richiesta al servizio. La richiesta è gestita da una classe adapter che invoca la logica aziendale del servizio tramite un'interfaccia. Invia quindi una risposta al proxy RPI, che restituisce il risultato alla logica aziendale del client.
-
-L'interfaccia proxy solitamente racchiude il protocollo di comunicazione sottostante e ce ne diversi tra cui scegliere noi vedremo REST e gRPC.
