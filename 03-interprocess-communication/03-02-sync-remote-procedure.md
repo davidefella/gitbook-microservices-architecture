@@ -75,3 +75,23 @@ Un'implementazione basica dell'OrderServiceProxy si bloccherebbe indefinitamente
 
 * Devi utilizzare design RPI proxies, come OrderServiceProxy, per gestire i servizi remoti non attivi.
 * Devi decidere come recuperare da un servizio remoto inattivo. Prima vedremo come scrivere proxy RPI robusti.
+
+## SLIDE 03-02-06
+
+Quando un servizio invoca in maniera sincrona un altro servizio, dovrebbe proteggersi utilizzando l'approccio descritto dagli sviluppatori di Netflix e consiste in una combinazione dei seguenti meccanismi:
+
+* **Timeout di rete:** non bloccarti mai indefinitamente e utilizza sempre timeout quando aspetti una risposta. Utilizzando i timeout, si garantisce che le risorse non vengano impegnate indefinitamente.
+* **Limitazione del numero di richieste** pendenti da un client verso un servizio: imponi un limite superiore al numero di richieste pendenti che un cliente può fare a un servizio specifico. Se il limite è stato raggiunto, è probabilmente inutile fare ulteriori richieste e questi tentativi dovrebbero fallire immediatamente.
+* Pattern del **circuit breaker**: traccia il numero di richieste riuscite e fallite e, se il tasso di errore supera una certa soglia, interrompi il circuito in modo che ulteriori tentativi falliscano immediatamente. Un gran numero di richieste fallite suggerisce che il servizio non è disponibile e che inviare ulteriori richieste sarebbe inutile.
+
+## SLIDE 03-02-07
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-19 alle 13.03.03.png" alt=""><figcaption></figcaption></figure>
+
+Utilizzare delle librerie dedicate rappresenta però solo una parte della soluzione, bisogna decidere caso per caso come i tuoi servizi dovrebbero recuperare da un servizio remoto che non risponde alle chiamate. Un'opzione semplice che va bene in alcuni scenari è che un servizio restituisca semplicemente un errore al suo client
+
+In altri scenari invece potrebbe avere senso restituire un valore di fallback, come ad esempio un valore predefinito o una risposta memorizzata nella cache. Come vediamo in figura l'implementazione del punto finale GET /orders/{orderId} invoca diversi servizi, tra cui Order Service, Kitchen Service e DeliveryService, e combina i risultati.
+
+Se i dati sono importanti e il servizio non è disponibile, l'API gateway dovrebbe restituire una versione memorizzata nella cache dei suoi dati o un errore. I dati degli altri servizi sono meno critici. Un client può, ad esempio, mostrare informazioni utili all'utente anche se il layer di consegna non fosse disponibile. Se il Delivery Service non è disponibile, l'API gateway dovrebbe restituire una versione memorizzata nella cache dei suoi dati o ometterli dalla risposta.
+
+È essenziale progettare i servizi in modo da gestire i fallimenti parziali, ma questo non è l'unico problema che dobbiamo risolvere quando si utilizza una RPI. Un altro problema è che, affinché un servizio possa invocare un altro servizio questo deve conoscere la posizione di rete di un'istanza. A prima vista sembra semplice, ma nella pratica è un problema complesso. È necessario utilizzare quella che viene chiamata meccanismo di scoperta del servizio.
