@@ -1,6 +1,6 @@
 # 🤝 02-04-Takeway
 
-## SLIDE 02-03
+## SLIDE 02-04
 
 L'architettura determina le abilità della nostra applicazione, inclusa la manutenibilità, la testabilità e la capacità di deployment, che influenzano direttamente la velocità di sviluppo.&#x20;
 

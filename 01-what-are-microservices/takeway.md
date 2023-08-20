@@ -1,6 +1,6 @@
 # 🤝 Takeway
 
-## SLIDE 05-01
+## SLIDE 01-05
 
 l pattern di architettura monolitica struttura l'applicazione come un'unica unità deployabile, mentre il pattern di architettura a microservizi decompone un sistema in un insieme di servizi indipendentemente deployabili, ciascuno con il proprio database.
 
