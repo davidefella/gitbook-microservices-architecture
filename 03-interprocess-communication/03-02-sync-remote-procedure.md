@@ -95,3 +95,107 @@ In altri scenari invece potrebbe avere senso restituire un valore di fallback, c
 Se i dati sono importanti e il servizio non è disponibile, l'API gateway dovrebbe restituire una versione memorizzata nella cache dei suoi dati o un errore. I dati degli altri servizi sono meno critici. Un client può, ad esempio, mostrare informazioni utili all'utente anche se il layer di consegna non fosse disponibile. Se il Delivery Service non è disponibile, l'API gateway dovrebbe restituire una versione memorizzata nella cache dei suoi dati o ometterli dalla risposta.
 
 È essenziale progettare i servizi in modo da gestire i fallimenti parziali, ma questo non è l'unico problema che dobbiamo risolvere quando si utilizza una RPI. Un altro problema è che, affinché un servizio possa invocare un altro servizio questo deve conoscere la posizione di rete di un'istanza. A prima vista sembra semplice, ma nella pratica è un problema complesso. È necessario utilizzare quella che viene chiamata meccanismo di scoperta del servizio.
+
+## SLIDE 03-02-08
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-19 alle 13.21.24.png" alt=""><figcaption></figcaption></figure>
+
+Supponiamo che stiamo scrivendo del codice che invoca un servizio che ha un'API REST. Per effettuare una richiesta, il nostro codice deve conoscere la posizione di rete (indirizzo IP e porta) di un'istanza di servizio. In un'applicazione tradizionale eseguita su hardware fisico, le posizioni di rete delle istanze di servizio sono di solito statiche. Ad esempio, il tuo codice potrebbe leggere le posizioni di rete da un file di configurazione che viene occasionalmente aggiornato. Ma in un'applicazione moderna basata su microservizi in cloud, di solito non è così semplice, come possiamo vedere anche in figura.&#x20;
+
+Le istanze di servizio hanno posizioni di rete assegnate dinamicamente. Inoltre, l'insieme di istanze di servizio cambia dinamicamente a causa del ridimensionamento automatico, dei guasti e degli aggiornamenti. Di conseguenza, il codice del tuo cliente deve utilizzare un meccanismo di scoperta del servizio.
+
+Quindi non possiamo configurare staticamente un client con gli indirizzi IP dei services. Invece, un'applicazione deve utilizzare un meccanismo di scoperta del servizio dinamico. La scoperta del servizio è concettualmente piuttosto semplice: il suo componente chiave è un registro dei servizi, che è un database delle posizioni di rete delle istanze di servizio di un'applicazione. Il meccanismo di scoperta del servizio aggiorna il registro dei servizi quando le istanze di servizio vengono avviate e interrotte. Quando un client invoca un servizio, il meccanismo di scoperta del servizio interroga il registro dei servizi per ottenere un elenco di istanze di servizio disponibili e inoltra la richiesta a una di esse.
+
+Esistono due modi principali per implementare la scoperta del servizio:
+
+* I servizi e i loro client  interagiscono direttamente con il registro dei servizi.
+* L'infrastruttura di distribuzione gestisce la scoperta del servizio (vedremo più avanti nel dettaglio)
+
+Vediamo ciascuna opzione.
+
+## SLIDE 03-02-09
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-19 alle 14.53.54.png" alt=""><figcaption></figcaption></figure>
+
+Un modo per implementare la scoperta del servizio è far interagire i servizi dell'applicazione e i loro clienti con il registro dei servizi. In figura vediamo il funzionamento di questo approccio. Un'istanza del servizio registra la sua posizione di rete in questo registro e un client, prima di invocare un servizio, interroga il registro dei servizi per ottenere un elenco di istanze di servizio. Quindi successivamente invia una richiesta a una di quelle istanze.
+
+Questo approccio alla scoperta del servizio è una combinazione di due pattern:
+
+* **pattern di auto-registrazione (Self registration pattern):** nel pattern di auto-registrazione, un'istanza del servizio si registra presso un registro dei servizi. Ciò significa che quando un'istanza viene avviata, questa invia una richiesta di registrazione all'API del registro dei servizi, fornendo informazioni sulla sua posizione di rete (indirizzo IP e porta) e altre informazioni necessarie. Inoltre, può anche fornire un URL di controllo dello stato (health check URL), che è un endpoint API che il registro dei servizi verifica periodicamente per verificare che l'istanza di servizio sia ancora sana e in grado di rispondere alle richieste. In questo modo, il registro dei servizi può tenere traccia delle istanze di servizio attive e disponibili.
+* **pattern di scoperta lato client (Client-side discovery pattern)**: nel pattern di scoperta lato client, questo interroga direttamente il registro dei servizi per ottenere un elenco delle istanze di servizio disponibili. Questo elenco contiene le posizioni di rete di tutte le istanze di servizio che sono attive e registrate. Il client può memorizzare nella cache questo elenco per migliorare le prestazioni. Quando il client vuole invocare il servizio, utilizza un algoritmo di bilanciamento del carico (come round-robin o random) per selezionare una delle istanze di servizio disponibili dalla lista. Quindi, effettua la richiesta al servizio selezionato.
+
+Un beneficio della scoperta del servizio a livello di applicazione è la sua capacità di gestire la situazione in cui i servizi sono sparsi su più piattaforme di distribuzione mentre una possibile limitazione è la necessità di avere una libreria di discovery per ciascun linguaggio o, eventualmente, framework che utilizzi. Spring Cloud, per esempio, aiuta solo gli sviluppatori Spring. Se stai usando un altro framework Java o linguaggi come NodeJS, dovresti cercare una libreria diversa per la scoperta del servizio.&#x20;
+
+Un'altra limitazione è che devi gestire tu stesso la configurazione e la manutenzione del registro dei servizi che potrebbe essere complesso.&#x20;
+
+## SLIDE 03-02-10
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-19 alle 15.13.16.png" alt=""><figcaption></figcaption></figure>
+
+Come vedremo più avanti, ci sono piattaforme come Docker e Kubernetes che dispongono di un registro dei servizi e un meccanismo di scoperta dei servizi integrato. La piattaforma di distribuzione assegna a ciascun servizio un _nome DNS_, un _indirizzo IP virtuale (VIP)_ e un _nome DNS_ che si risolve nell'indirizzo VIP.&#x20;
+
+Quando un client del servizio effettua una richiesta al nome DNS/VIP, la piattaforma di distribuzione indirizza automaticamente la richiesta a una delle istanze del servizio disponibili. Di conseguenza, la registrazione dei servizi, la scoperta dei servizi e l'instradamento delle richieste sono gestiti completamente dalla piattaforma di distribuzione. Questa figura illustra come funziona questo concetto. La piattaforma di distribuzione include un registro dei servizi che tiene traccia degli indirizzi IP dei servizi distribuiti.&#x20;
+
+In questo esempio, un client accede al servizio Ordine utilizzando il nome DNS "order-service", che corrisponde all'indirizzo IP virtuale 10.1.3.4. La piattaforma di distribuzione bilancia automaticamente le richieste tra le tre istanze del servizio Ordine.
+
+Questo approccio è una combinazione di due modelli:
+
+* **Modello di registrazione di terze parti**: invece che lasciare che il servizio si registri, una terza parte chiamata "registrar" (tipicamente parte della piattaforma di distribuzione) si occupa della registrazione.
+* **Modello di scoperta lato server:** Invece che i client interroghino direttamente il registro dei servizi, questi effettuano una richiesta a un nome DNS, che si risolve in un instradatore delle richieste che interroga il registro e bilancia le richieste.
+
+Il principale vantaggio della scoperta dei servizi fornita dalla piattaforma è che tutti gli aspetti della scoperta dei servizi sono interamente gestiti dalla piattaforma di distribuzione. Né i servizi né i client contengono alcun codice di scoperta dei servizi. Di conseguenza, il meccanismo di scoperta dei servizi è facilmente disponibile per tutti i servizi e i client, indipendentemente dal linguaggio di programmazione o dal framework utilizzato.
+
+Tuttavia, un limite è che la scoperta dei servizi fornita dalla piattaforma funziona solo per i servizi distribuiti sulla stessa piattaforma. Ad esempio, come accennato in precedenza descrivendo la scoperta a livello di applicazione, la scoperta basata su Kubernetes funziona solo per i servizi in esecuzione su Kubernetes. Nonostante questo vincolo, in genere si consiglia di utilizzare la scoperta dei servizi fornita dalla piattaforma ogni volta che sia possibile.
+
+## SLIDE 03-02-11
+
+Quando si utilizza la messaggistica, i servizi comunicano scambiandosi messaggi in modo asincrono. Un'applicazione basata su messaggistica utilizza tipicamente un Message Broker, che agisce come intermediario tra i servizi.&#x20;
+
+Tuttavia, un'altra opzione è utilizzare un'architettura senza broker, in cui i servizi comunicano direttamente tra loro. Un client di un servizio effettua una richiesta inviando un messaggio al servizio. Se ci si aspetta che l'istanza del servizio risponda, essa lo farà inviando un messaggio separato al client. Poiché la comunicazione è asincrona, il cliente non si blocca in attesa di una risposta. Invece, il client è scritto assumendo che la risposta non sarà ricevuta immediatamente.
+
+Un mittente (un'applicazione o un servizio) scrive un messaggio su un canale dedicato, e un destinatario (a sua volta un'applicazione o un servizio) legge i messaggi da questo canel. Vediamo i messaggi e poi esaminiamo i canali.
+
+Come è composto un messaggio? Un messaggio è composto da un'intestazione e un corpo del messaggio. L'intestazione è una collezione di coppie nome-valore, metadati che descrivono i dati che vengono inviati. Oltre alle coppie nome-valore fornite dal mittente del messaggio, l'intestazione del messaggio contiene coppie nome-valore, come un ID del messaggio univoco generato dal mittente o dall'infrastruttura di messaggistica, e un indirizzo di ritorno opzionale, che specifica il canale di messaggistica su cui dovrebbe essere scritta una risposta.&#x20;
+
+Il corpo del messaggio è il dato che viene inviato, in formato testuale o binario. Esistono diversi tipi di messaggi:
+
+* **Documento**: un messaggio generico che contiene solo dati. Il destinatario decide come interpretarlo. La risposta a un comando ne è un esempio.&#x20;
+* **Comando**: un messaggio che equivale a una richiesta RPC. Specifica l'operazione da invocare e i suoi parametri.&#x20;
+* **Evento**: un messaggio che indica che è accaduto qualcosa di rilevante nel mittente. Un evento è spesso un evento di dominio, che rappresenta una modifica di stato di un oggetto di dominio come un Ordine o un Cliente.
+
+L'approccio all'architettura a microservizi che vedremo utilizza ampiamente comandi ed eventi.&#x20;
+
+## SLIDE 03-02-12
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-19 alle 15.41.25.png" alt=""><figcaption></figcaption></figure>
+
+Come mostrato in figura i messaggi vengono scambiati tramite canali. La logica di business nel mittente invoca un'interfaccia di porta di invio, che racchiude il meccanismo di comunicazione sottostante. La porta di invio è implementata da una classe Adapter specializzata nell'invio di messaggi tramite un canale dedicato.&#x20;
+
+Un canale è un'astrazione dell'infrastruttura di messaggistica mentre la classe Adapter per la gestione dei messaggi nel servizio ricevente viene invocata per gestire il messaggio. Questa chiama un'interfaccia di ricezione implementata dalla logica di business del consumatore. Un numero qualsiasi di mittenti può inviare messaggi a un canale. Allo stesso modo, un numero qualsiasi di riceventi può ricevere messaggi da un canale.
+
+Esistono due tipi di canali:&#x20;
+
+* **point-to-point**: un canale point-to-point consegna un messaggio esattamente a uno dei consumatori che sta leggendo dal canale. I servizi utilizzano i canali point-to-point per gli stili di interazione uno a uno descritti in precedenza. Ad esempio, un messaggio di comando viene spesso inviato su un canale point-to-point
+* **publish-subscribe:** un canale publish-subscribe consegna ogni messaggio a tutti i consumatori collegati. I servizi utilizzano i canali publish-subscribe per gli stili di interazione uno a molti descritti in precedenza. Ad esempio, un messaggio di evento viene di solito inviato su un canale publish-subscribe.
+
+## SLIDE 03-02-13
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-19 alle 15.49.44.png" alt=""><figcaption></figcaption></figure>
+
+Uno dei vantaggi preziosi della messaggistica è che è sufficientemente flessibile da supportare tutti gli stili di interazione descritti precedentemente. Alcuni stili di interazione sono implementati direttamente tramite la messaggistica e altri devono essere implementati sopra la messaggistica.&#x20;
+
+Quando un client e un servizio interagiscono utilizzando il pattern richiesta/risposta sincrono oppure asincrono, il client invia una richiesta e il servizio invia una risposta. La differenza tra i due stili di interazione è che con la richiesta/risposta sincrona chiaramente il client si aspetta che il servizio risponda immediatamente, mentre con la richiesta/risposta asincrona non c'è tale attesa.&#x20;
+
+La messaggistica è per natura asincrona, quindi fornisce solo la richiesta/risposta asincrona (anche se va detto che un client potrebbe bloccarsi fino a quando non riceve una risposta). Il client e il servizio comunicando scambiandosi una coppia di messaggi. Come mostrato nella figura, il client invia un messaggio di comando, che specifica l'operazione da eseguire e i parametri a un canale di messaggistica punto a punto di proprietà di un servizio. Il servizio elabora le richieste e invia un messaggio di risposta, che contiene l'esito, a un canale punto a punto di proprietà del client.
+
+Il client deve indicare al servizio dove inviare un messaggio di risposta e deve abbinare i messaggi di risposta alle richieste. Fortunatamente, risolvere questi due problemi non è così difficile. Il client invia un messaggio di comando che ha un'intestazione di canale di risposta. Il server scrive il messaggio di risposta, che contiene un identificativo di correlazione con lo stesso valore dell'identificativo del messaggio, al canale di risposta. Il client utilizza l'identificativo di correlazione per abbinare il messaggio di risposta alla richiesta. Poiché il client e il servizio comunicano tramite messaggistica, l'interazione è per natura asincrona. In teoria, un client di messaggistica potrebbe bloccarsi fino a quando non riceve una risposta, ma nella pratica il client elaborerà le risposte in modo asincrono. Inoltre, le risposte sono tipicamente elaborate da una qualsiasi delle istanze del client.
+
+## SLIDE 03-02-14
+
+L'implementazione delle notifiche unidirezionali è semplice utilizzando la messaggistica asincrona. Il client invia un messaggio, tipicamente di comando, a un canale punto a punto di proprietà del servizio. Il servizio si iscrive al canale e elabora il messaggio. Non invia indietro una risposta.
+
+PUBLISH/SUBSCRIBE La messaggistica ha un supporto integrato per lo stile di interazione publish/subscribe. Un client pubblica un messaggio su un canale publish-subscribe che viene letto da più consumatori. I servizi utilizzano il publish/subscribe per pubblicare eventi di dominio, che rappresentano modifiche agli oggetti di business. Il servizio che pubblica gli eventi di dominio possiede un canale publish-subscribe, il cui nome deriva dalla classe di dominio. Ad esempio, il servizio Ordine pubblica eventi Ordine su un canale Ordine, e il servizio Consegna pubblica eventi Consegna su un canale Consegna. Un servizio interessato agli eventi di un particolare oggetto di dominio deve solamente iscriversi al canale appropriato.
+
+PUBLISH/ASYNC RESPONSES Lo stile di interazione publish/async responses è uno stile di interazione di livello superiore che viene implementato combinando elementi di publish/subscribe e request/response. Un client pubblica un messaggio che specifica un'intestazione di canale di risposta su un canale publish-subscribe. Un consumer scrive un messaggio di risposta contenente un identificativo di correlazione sul canale di risposta. Il client raccoglie le risposte utilizzando l'identificativo di correlazione per abbinare i messaggi di risposta alla richiesta.
+
+Ogni servizio nella nostra applicazione che ha un'API asincrona utilizzerà una o più di queste tecniche di implementazione.

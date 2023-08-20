@@ -14,3 +14,4 @@
 * [🥸 03 - Interprocess communication](03-interprocess-communication/README.md)
   * [03-01-Overview](03-interprocess-communication/03-01-overview.md)
   * [03-02-Sync-Remote-Procedure](03-interprocess-communication/03-02-sync-remote-procedure.md)
+  * [03-03-Creating an API specification](03-interprocess-communication/03-03-creating-an-api-specification.md)
