@@ -18,4 +18,7 @@
   * [03-04-Asynchronous Messaging](03-interprocess-communication/03-04-asynchronous-messaging.md)
   * [🤝 03-04-Takeway](03-interprocess-communication/03-04-takeway.md)
 * [😇 04 - Managing transactions with sagas](04-managing-transactions-with-sagas/README.md)
-  * [04-01 - Transaction management in a microservice architecture](04-managing-transactions-with-sagas/04-01-transaction-management-in-a-microservice-architecture.md)
+  * [04-01 - Transaction management](04-managing-transactions-with-sagas/04-01-transaction-management.md)
+  * [04-02-Coordinating Sagas](04-managing-transactions-with-sagas/04-02-coordinating-sagas.md)
+  * [04-03 - Handling the lack of isolation](04-managing-transactions-with-sagas/04-03-handling-the-lack-of-isolation.md)
+  * [04-04-ORDER SERVICE and  CREATE ORDER SAGA](04-managing-transactions-with-sagas/04-04-order-service-and-create-order-saga.md)

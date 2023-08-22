@@ -1,4 +1,4 @@
-# 04-01 - Transaction management in a microservice architecture
+# 04-01 - Transaction management
 
 ## SLIDE 04-01-01
 
@@ -55,4 +55,76 @@ Quindi, le transazioni distribuite sono allettanti perché hanno grosso modo lo 
 **SLIDE 04-01-03**
 
 <figure><img src="../.gitbook/assets/Screenshot 2023-08-22 alle 11.34.37.png" alt=""><figcaption></figcaption></figure>
+
+#### Utilizzare il pattern Saga per mantenere la coerenza dei dati
+
+Le saghe sono meccanismi per mantenere la coerenza dei dati in un'architettura a microservizi senza dover utilizzare transazioni distribuite e si definisce una saga per ogni comando di sistema che deve aggiornare dati in più servizi. Di base una saga è una sequenza di **transazioni locali**. Ogni transazione locale aggiorna i dati all'interno di un singolo servizio utilizzando i noti framework e librerie di transazioni ACID menzionati in precedenza.
+
+L'operazione di sistema avvia il primo passo della saga, il completamento di una transazione locale attiva l'esecuzione della successiva transazione locale. Un importante vantaggio della messaggistica asincrona è che assicura che tutte le fasi di una saga vengano eseguite, anche se uno o più partecipanti della saga sono temporaneamente non disponibili.&#x20;
+
+Le saghe differiscono quindi dalle transazioni ACID in un paio di modi importanti. Per prima cosa mancano della proprietà di isolamento delle transazioni ACID ed inoltre poiché ogni transazione locale conferma le sue modifiche, una saga deve essere annullata utilizzando transazioni di compensazione.&#x20;
+
+Vediamo un esempio di saga relativa alla Creazione dell'Ordine come illustrato in figura. Il servizio di _Ordine_ implementa l'operazione createOrder() utilizzando questa saga. La prima transazione locale della saga viene avviata dalla richiesta esterna di creare un ordine. Le altre cinque transazioni locali sono ciascuna innescate dal completamento della precedente a catena.
+
+Vediamo quindi che questa saga è composta dalle seguenti transazioni locali:
+
+1. _Servizio di Ordine:_ Crea un Ordine in uno stato APPROVAL\_PENDING.
+2. _Servizio del Consumatore_: Verifica che il consumatore possa effettuare un ordine.
+3. _Servizio di Cucina_: Convalida i dettagli dell'ordine e crea un Ticket in stato CREATE\_PENDING.
+4. _Servizio di Contabilità:_ Autorizza la carta di credito del consumatore.
+5. _Servizio di Cucina:_ Cambia lo stato del Ticket in AWAITING\_ACCEPTANCE.
+6. _Servizio di Ordine_: Cambia lo stato dell'Ordine in APPROVED.
+
+Successivamente vedremo come i servizi che partecipano a una saga comunicano utilizzando la messaggistica asincrona, un servizio pubblica un messaggio quando una transazione locale viene completata. Questo messaggio attiva quindi il passaggio successivo della saga.&#x20;
+
+Non solo l'uso della messaggistica garantisce che i partecipanti della saga siano effettivamente debolmente accoppiati, ma garantisce anche che una saga venga completata. Questo perché se il destinatario di un messaggio non è temporaneamente disponibile, il message broker memorizza il messaggio fino a quando può essere consegnato.
+
+A primo impatto le saghe sembrano semplici, ma ci sono alcune considerazioni da fare. Notiamo ad esempio la mancanza di isolamento tra le saghe oppure annullare le modifiche in caso di errore non è banale.&#x20;
+
+**SLIDE 04-01-04**
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 alle 11.56.15.png" alt=""><figcaption></figcaption></figure>
+
+Una caratteristica importante delle transazioni ACID tradizionali è che la logica di business può facilmente annullare una transazione se rileva la violazione di un qualche vincolo eseguendo una istruzione ROLLBACK e il database annulla tutte le modifiche apportate finora.&#x20;
+
+Purtroppo, le saghe non possono essere automaticamente annullate, poiché ogni passaggio conferma le sue modifiche nel database locale. Ciò significa, ad esempio, che se l'autorizzazione della carta di credito fallisce nel quarto passo della Saga di Creazione dell'Ordine, l'applicazione UrbanEats deve esplicitamente annullare le modifiche apportate dai primi tre passi. È necessario scrivere ciò che sono note come **transazioni di compensazione**.
+
+Supponiamo che l'ennesima transazione _(n + 1)_ di una saga fallisca. Gli effetti delle precedenti _n_ transazioni devono essere annullati. Concettualmente, ciascuno di quei passaggi, _Ti_, ha una transazione di compensazione corrispondente, _Ci_, che annulla gli effetti del _Ti_. Per annullare gli effetti di quei primi _n_ passaggi, la saga deve eseguire ciascun _Ci_ in ordine inverso.&#x20;
+
+La sequenza di passaggi è _T1 ... Tn, Cn ... C1_, come mostrato in figura. In questo esempio, _Tn+1_ fallisce, il che richiede di annullare i passaggi _T1 ... Tn_.
+
+La saga esegue le transazioni di _compensazione_ nell'ordine inverso delle transazioni in avanti: _Cn ... C1_. La meccanica di sequenziare le _Ci_ non è diversa dalla sequenza delle _Ti_. Il completamento di Ci deve innescare l'esecuzione di _Ci-1_.&#x20;
+
+**SLIDE 04-01-05**
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 alle 12.02.49.png" alt=""><figcaption></figcaption></figure>
+
+Consideriamo, ad esempio, la Saga di Creazione dell'Ordine. Questa saga può fallire per una varietà di motivi:
+
+* Le informazioni sul consumatore non sono valide o il consumatore non è autorizzato a creare ordini.
+* Le informazioni sul ristorante non sono valide o il ristorante non è in grado di accettare ordini.
+* L'autorizzazione della carta di credito del consumatore fallisce.
+
+Se una transazione locale fallisce, il meccanismo di coordinamento della saga deve eseguire transazioni di compensazione che respingono l'Ordine e possibilmente annullino il Ticket.&#x20;
+
+In tabella vediamo  le transazioni di compensazione per ciascun passaggio della Saga di Creazione dell'Ordine ed è importante notare che non tutti i passaggi necessitano di transazioni di compensazione.&#x20;
+
+I passaggi di sola lettura, come _verifyConsumerDetails()_, non hanno bisogno di transazioni di compensazione. Allo stesso modo, i passaggi come _authorizeCreditCard()_ che sono seguiti da passaggi che hanno sempre successo non necessitano di transazioni di compensazione.
+
+Vedremo come i primi tre passaggi della Saga di Creazione dell'Ordine siano definiti transazioni **compensabili** perché sono seguiti da passaggi che possono fallire, come il quarto passaggio sia definito transazione di **inversione** della saga poiché è seguito da passaggi che non falliscono mai, e come gli ultimi due passaggi sono definiti transazioni **ripetibili** perché hanno sempre successo.
+
+Per capire come vengono utilizzate le transazioni di compensazione, immaginiamo uno scenario in cui l'autorizzazione della carta di credito del consumatore fallisce. In questo scenario, la saga esegue le seguenti transazioni locali:
+
+1. _Order Service_: Crea un Ordine in uno stato APPROVAL\_PENDING.
+2. _ConsumerService_: Verifica che il consumatore possa effettuare un ordine.
+3. _Kitchen Service:_ Convalida i dettagli dell'ordine e crea un Ticket nello stato CREATE\_PENDING.
+4. _Accounting Service_: Autorizza la carta di credito del consumatore, che fallisce.
+5. _Kitchen Service_: Cambia lo stato del Ticket in CREATE\_REJECTED.
+6. _Order Service_: Cambia lo stato dell'Ordine in REJECTED.
+
+Il quinto e il sesto passaggio sono transazioni di **compensazione** che annullano le modifiche apportate da Kitchen Service e Order Service, rispettivamente. La logica di coordinamento di una saga è responsabile del sequenziamento dell'esecuzione di transazioni in avanti e di compensazione. Vediamo come funziona.
+
+
+
+
 
